@@ -1,0 +1,23 @@
+.quote-divison{
+    padding: 10px;
+    background-color: rgba(165, 42, 42, 0.189);
+    /* background-image: url("../assets/Timer-Scroll.png"); */
+    background-size: cover;
+    background-position: center;
+    
+    border-radius: 1rem;
+
+    width: fit-content;
+    height: 5rem;
+    background-size: cover;
+}
+
+.quote{
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+}
+
+.quote-author {
+    color: white;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    text-align: right;
+}

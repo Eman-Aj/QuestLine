@@ -1,9 +1,9 @@
 import '../css/Timer.css'
 import { useState, useEffect, useRef } from "react"
 
-function Timer ({sendNotification})
+function Timer ({sendNotification, changeQuote})
 {
-    const devMode = false
+    const devMode = true
     const getDate = () => { return (Math.floor(Date.now() / 1000)) /* Displays in seconds*/}
     
     //Use ref so that we don't have lingering intervals
@@ -35,6 +35,13 @@ function Timer ({sendNotification})
     const [playing, setPlaying] = useState(false)
 
     const [formattedTime, setFormattedTime] = useState(formatTime(focusTime))    
+
+    
+    useEffect (() => {
+        if (stage == "Focus") {
+            changeQuote()
+        }
+    }, [stage])
 
     //Uses the local endTime we send
     const updateClock = (initEndTime) => {
@@ -128,7 +135,9 @@ function Timer ({sendNotification})
             initDuration = breakTime
         }
 
-        if (!unatural) {sendNotification({"stage": newStageText, "time": formatTime(initDuration)})}
+        if (!unatural) {
+            sendNotification({"stage": newStageText, "time": formatTime(initDuration)})
+        }
         
         startClock(initDuration)
     }

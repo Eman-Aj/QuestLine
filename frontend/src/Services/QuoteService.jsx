@@ -9,11 +9,9 @@
 }
 */
 
-export default function NotificationService(){
+export default function QuoteService(){
     //Holds API info
     const quotesApiUrl = "https://api.allorigins.win/raw?url=https://zenquotes.io/api/quotes";
-
-    // const [quotes, ]
 
     const getQuotes = async () => {
     
@@ -21,15 +19,18 @@ export default function NotificationService(){
         var data = await response.json()
         console.log(data)
         localStorage.setItem("Quotes", JSON.stringify(data))
-        console.log("Added Quotes");
+        console.log("Added New Quotes");
     
     }
 
-    const getQuotess = () => {
-    
-    localStorage.setItem("Quotes", JSON.stringify({}))
-    console.log("Added QUotes");
-    
+    const checkQuotes = () =>{
+        if (localStorage.getItem("Quotes") === null || localStorage.getItem("Quotes") == {}) {
+            getQuotes()
+        } 
+        else {
+            
+            return true;
+        }
     }
 
     const removeQuotes = () => {
@@ -39,13 +40,41 @@ export default function NotificationService(){
         
     }
 
-    if (localStorage.getItem("Quotes") === null || localStorage.getItem("Quotes") == {}) {
-        getQuotes()
-    } else {
-        console.log("Quotes already added");
+    const pickQuote = (index) => {
+        checkQuotes();
+        
+        //Just the odd format of accessing the quote value
+        const selectedQuote = Object.entries(JSON.parse(localStorage.getItem("Quotes")))[index][1]
+  
+        return selectedQuote; //Fixx it so i chooses and index
     }
 
-    //Pick random quote
+    const randomQuote = () => {
 
-    return ({removeQuotes})
+        //Weird random picker
+        const quoteNumber = Math.floor(Math.random() * (50 - 0) + 0);
+        const quote = pickQuote(quoteNumber);
+
+        return quote;
+    }
+
+    // checkQuotes() === true ? console.log("Quotes Already Added") : null; 
+
+    
+    
+
+    
+    return ({removeQuotes, randomQuote})
 }
+
+export function QuoteServiceCredit(){
+    return (<div>
+        Inspirational quotes provided by
+        <div>
+          <a href="https://zenquotes.io/" target="_blank">
+            ZenQuotes API
+          </a>
+        </div>
+      </div>)
+}
+

@@ -16,13 +16,27 @@
 }
 
 .main-div {
-  background-color: burlywood;
+  background-color: rgba(222, 184, 135, 0.76);
   border-radius: 10px;
 }
 
+@media screen and (max-width: 100px) {
+  html {
+    background-size: 10px;
+    background-image: url(../assets/Timer-Scroll.png);
+  }
+}
+
+
 html {
   background-color: rgb(176, 113, 53);
+  background-image: url(../assets/Background.png);
+  background-size: cover;
+  
+  background-position: center;
+  
 }
+
 
 /*
 .logo {
