@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import reactLogo from "./assets/react.svg";
 import viteLogo from "/vite.svg";
 import "./css/App.css";
+import "./css/styles.css";
 
 //Components
 import Timer from "./Components/Timer";
@@ -15,6 +16,8 @@ import handleVisiblity from "./hooks/Visiblity";
 import Notifications from "./Services/Notifications";
 import QuoteService from "./Services/QuoteService";
 import { QuoteServiceCredit } from "./Services/QuoteService";
+import System from "./system";
+import NavBar from "./Components/NavBar";
 
 function App() {
 
@@ -70,12 +73,19 @@ function App() {
 
 
   return (
+
+    <>
+    <NavBar></NavBar>
+
     <div className="main-div">
 
-      {notificationToggle}
+      {/* <div><System></System></div> */}
+
+
+      {/* {notificationToggle} */}
 
       <QuoteItem quote={quote}/>
-      <Timer sendNotification={notify} changeQuote={changeQuote} />
+      <Timer className="timer-class" sendNotification={notify} changeQuote={changeQuote} />
       <Todolist />
 
       <button onClick={removeQuotes}> Update Quotes</button>
@@ -83,6 +93,8 @@ function App() {
       <QuoteServiceCredit />
 
     </div>
+    </>
+    
   );
 }
 

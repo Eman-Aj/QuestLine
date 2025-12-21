@@ -1,0 +1,130 @@
+@font-face {
+  font-family: Montserrat;
+  src: url("../src/assets/fonts/Montserrat-VariableFont_wght.ttf");
+}
+
+
+
+:root{
+
+
+    --grey1: #ffffff;
+    --grey2: #E0E0E0;
+    --grey3: #C0C0C0;
+    --grey4: #A0A0A0;
+    --grey5: #808080;
+    --grey6: #404040;
+    --grey7: #202020;
+
+    /* Default Theme */
+    --bg:var(--grey2);
+
+    font-family: Montserrat, Arial, Helvetica, sans-serif;
+  
+    /* Basic stuff */ 
+    margin: 0;
+	padding: 0;
+	border: 0;
+    font-size: 100%;
+	vertical-align: baseline;
+
+    --margin-xxl: 2.5rem;
+    --margin-xl: 1.75rem;
+    --margin-l: 1.25rem;
+    --margin-m: 1rem;
+    --margin-s: 0.75rem;
+    --margin-xs: 0.5rem;
+    --margin-xxs: 0.25rem; 
+
+}
+
+.light{
+    --txt1:var(--grey7);
+    --txt2:var(--grey6);
+    
+    --bg1:var(--grey1);
+    --bg2:var(--grey2);
+    --bg3:var(--grey3);
+    --bg4:var(--grey7);
+    
+    
+}
+.mid{
+    --txt1:var(--grey1);
+    --txt2:var(--grey2);
+    
+    --bg1:var(--grey4);
+    --bg2:var(--grey5);
+    --bg3:var(--grey6);
+    --bg4:var(--grey7);
+}
+.dark{
+    --txt1:var(--grey1);
+    --txt2:var(--grey2);
+    
+    --bg1:var(--grey7);
+    --bg2:var(--grey6);
+    --bg3:var(--grey5);
+    --bg4:var(--grey7);
+}
+
+
+h1 {
+    font-size: 5rem;
+    color: var(--txt1);
+}
+h2 {
+    font-size: 2.5rem;
+    color: var(--txt1);
+}
+h3 {
+    font-size: 1.25rem;
+    color: var(--txt2);
+}
+
+button {
+
+    border-radius: 5px;
+    
+    
+    border: none;
+    background-color: var(--bg1);
+
+    color: var(--txt1);
+}
+
+/* Theres a CSS convention for ordering things
+---------------------------------
+Positions 
+    left right...
+    z-index, dipslay/ flex
+
+size
+    min max, padding, margin
+
+visual
+    colors, border and curves, and shadow
+
+typography
+    the text appearance
+
+effects
+    clip path, transforms and fitlers
+
+animations
+    curso hover etc.
+
+misc
+
+---------------------------------
+You read how it’s placed first
+
+Then how big it is
+
+Then how it looks
+
+Then how it behaves
+
+
+
+*/

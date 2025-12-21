@@ -1,0 +1,86 @@
+
+.nav{
+    
+    position: relative;
+    top: -15px;
+    
+    width: 100%;
+    margin: 0px;
+    margin-bottom: 3rem;
+
+    --navColor: var(--bg1);
+
+}
+
+.nav-wrap{
+
+    position:relative;
+    z-index: 1;
+
+    margin: 0rem;
+    height: 5rem;
+    width: 100%;
+
+    background-color: var(--navColor);
+
+}
+
+.nav-curve{
+    /* top: 100rem; */
+    
+    /* use absolute here so it's positioned based on parent */
+    position: absolute; 
+    top: -0.2rem;
+    z-index: 0;
+
+    height: 10rem;
+    width: 100%;
+
+    background-color: var(--navColor);
+
+    clip-path: ellipse(50% 17% at 50% 50%);
+}
+
+.nav-items{
+    z-index: 2;
+    position: absolute;
+    top: 2rem;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: row;
+
+    list-style: none;
+
+    width: 100%;
+
+    color: rgb(255, 255, 255);
+
+}
+
+.nav-link{
+
+    padding: 0.5rem;
+    border-radius: 1rem;
+
+    color: var(--txt1);
+    background-color: var(--bg2);
+    text-decoration: none;
+}
+
+.theme {
+    position: fixed;
+    left: 89%;
+    top: 93%;
+}
+
+
+
+/* 
+old .nav flex
+display: flex;
+align-items: center;
+justify-content: center; */
+
+/* flex-direction: column; */

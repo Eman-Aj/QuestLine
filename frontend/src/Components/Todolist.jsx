@@ -91,19 +91,22 @@ export default function Todolist({}) {
 
   return (
     <>
+
+      <h2>Quests</h2>
+
       <form onSubmit={createItem}>
-        <input
+        <input className="todo-input"
           placeholder="Enter Item"
           onChange={(e) => {
             setNewItemText(e.target.value);
           }}
           value={newItemText}
         ></input>
-        <button>Create</button>
+        <button className="todo-create-button">Create</button>
       </form>
       {/*  ○↑↓● */}
 
-      <div>
+      <div className="todo-list">
         {Object.entries(list) //Converts into arrays
         .sort(([,a],[,b]) => a.position - b.position) //Sorts a b things in the arrays cause it's structured like [[key, *value*]]
         .map(([key, value]) => ( //Maps each one now
@@ -121,7 +124,7 @@ export default function Todolist({}) {
         ))}
       </div>
 
-      <button
+      <button className="todo-clear"
         onClick={() => {
           localStorage.removeItem("List");
           localStorage.setItem("List", JSON.stringify({}));
@@ -137,8 +140,11 @@ export default function Todolist({}) {
           console.log(Object.entries(list).length);
         }}
       >
-        Do Something
+        Show Entries
       </button>
+
+      
+
     </>
   );
 }

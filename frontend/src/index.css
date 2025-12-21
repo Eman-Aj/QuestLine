@@ -1,3 +1,16 @@
+
+.main-div{
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+}
+
+/* 
+:root {
+
+  
+} */
+
 /* :root {
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;

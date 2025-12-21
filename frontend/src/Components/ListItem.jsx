@@ -8,7 +8,7 @@ export default function Listitem({
   updateText,
   checkItem,
   reorder,
-  position
+  position,
 }) {
   const [isEditing, setIsEditing] = useState(""); //Item Key
   const [itemText, setItemText] = useState(text);
@@ -18,19 +18,22 @@ export default function Listitem({
     if (inputRef.current) {
       inputRef.current.focus();
     }
-  }
+  };
 
-  useEffect(()=>{
-    focustInput()
-  },[isEditing])
+  useEffect(() => {
+    focustInput();
+  }, [isEditing]);
 
   return (
     <>
-    {/* <>{position}</> */}
-      <div className="list-item" key={itemKey}>
+      {/* <>{position}</> */}
+
+      <div></div>
+
+      <div className="todo-item" key={itemKey}>
         {/* This is Check Button */}
         <button
-          className="check-button"
+          className="check-button item"
           onClick={() => {
             checkItem(itemKey);
           }}
@@ -39,6 +42,7 @@ export default function Listitem({
           {status ? "●" : "○"}
         </button>
 
+        <div className="todo-item-text item">
         {isEditing === itemKey ? (
           <form
             onSubmit={(e) => {
@@ -64,17 +68,34 @@ export default function Listitem({
             {text}
           </h3>
         )}
+        </div>
 
-        <button
-          className="close-button"
-          onClick={() => {
-            removeItem(itemKey);
-          }}
-        >
-          ✘
-        </button>
-        <button onClick={() => {reorder(itemKey, -1)}}>↑</button>
-        <button onClick={() => {reorder(itemKey, 1)}}>↓</button>
+        <div className="todo-item-actions item">
+          <button
+            className="todo-item-remove"
+            onClick={() => {
+              removeItem(itemKey);
+            }}
+          >
+            ✘
+          </button>
+          <button
+            className="todo-item-move"
+            onClick={() => {
+              reorder(itemKey, -1);
+            }}
+          >
+            ↑
+          </button>
+          <button
+            className="todo-item-move"
+            onClick={() => {
+              reorder(itemKey, 1);
+            }}
+          >
+            ↓
+          </button>
+        </div>
       </div>
     </>
   );

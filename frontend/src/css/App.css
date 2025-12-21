@@ -1,8 +1,16 @@
  #root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
+  /* max-width: 1280px; */
+  margin: 0;
+  padding: 0;
   text-align: center;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  flex-direction: column;
+  /* flex */
+
 }
 
 * {
@@ -16,8 +24,17 @@
 }
 
 .main-div {
-  background-color: rgba(222, 184, 135, 0.76);
+  
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 55rem;
+
+  background-color: var(--bg2);
   border-radius: 10px;
+
+  
 }
 
 @media screen and (max-width: 100px) {
@@ -29,8 +46,9 @@
 
 
 html {
-  background-color: rgb(176, 113, 53);
-  background-image: url(../assets/Background.png);
+  background: linear-gradient(180deg, #020617, #172547);
+
+  /* background-image: url(../assets/Background.png); */
   background-size: cover;
   
   background-position: center;

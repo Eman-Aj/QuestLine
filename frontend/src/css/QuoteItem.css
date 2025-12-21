@@ -1,6 +1,7 @@
 .quote-divison{
     padding: 10px;
-    background-color: rgba(165, 42, 42, 0.189);
+    margin: 1rem;
+    background-color: var(--bg3);
     /* background-image: url("../assets/Timer-Scroll.png"); */
     background-size: cover;
     background-position: center;
@@ -13,11 +14,12 @@
 }
 
 .quote{
+    color: var(--txt1);
     font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
 }
 
 .quote-author {
-    color: white;
+    color: var(--txt2);
     font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
     text-align: right;
 }

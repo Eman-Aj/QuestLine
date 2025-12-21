@@ -3,7 +3,7 @@ import { useState, useEffect, useRef } from "react"
 
 function Timer ({sendNotification, changeQuote})
 {
-    const devMode = true
+    const devMode = false
     const getDate = () => { return (Math.floor(Date.now() / 1000)) /* Displays in seconds*/}
     
     //Use ref so that we don't have lingering intervals
@@ -143,30 +143,33 @@ function Timer ({sendNotification, changeQuote})
     }
 
     return <> 
-    <div>
+    
+    <div className="timer">
+        <h2 className="stage">{stage}</h2>
         {/* You can have conditional classnames*/}
         {/* !NOTICE we use ` it's not quotes */}
-        <h2>{stage}</h2>
-        <div className= "timer" >
+        
+        <div className= "timer-time" >
             <h1 className={`timer-${stage}`}>{formattedTime}</h1>
         </div>
         
-        <button onClick={toggleClock}>{clockText}</button>
+        <div className="timer-buttons">
+            <button onClick={toggleClock}><h3>{clockText}</h3></button>
 
          <button onClick={() => {
             setStageNum(prev => {
             const nextStage = prev + 1        
             changeStage(nextStage, true) 
             return nextStage
-            })}}>Skip</button>
+            })}}><h3>Skip</h3></button>
 
          {/* Reset Button */}
          <button onClick={() => {
             stopClock()
             console.log(stageNum)
             changeStage(0, true)
-         }}>Reset</button>
-
+         }}><h3>Reset</h3></button>
+        </div>
     </div>
     
     </>
