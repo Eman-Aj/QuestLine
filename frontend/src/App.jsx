@@ -20,7 +20,6 @@ import { QuoteServiceCredit } from "./Services/QuoteService";
 import NavBar from "./Components/NavBar";
 
 function App() {
-
   //Service Functions
   const { notify } = Notifications(); //Find Visibility Component Here
   const { removeQuotes, randomQuote } = QuoteService();
@@ -29,7 +28,7 @@ function App() {
   const [notifications, setNotification] = useState(
     localStorage.getItem("notifications")
   );
-  const [quote, setQuote] = useState(randomQuote())
+  const [quote, setQuote] = useState(randomQuote());
   const [lastQuote, setLastQuote] = useState(Math.floor(Date.now() / 1000));
 
   //Quote Overflow
@@ -38,63 +37,74 @@ function App() {
     if (quoteTime - lastQuote > 3) {
       setQuote(randomQuote());
       // console.log("Quote Changed");
-      setLastQuote(quoteTime)
-    } 
-    else {console.log("Slow down buster");}
-  }
+      setLastQuote(quoteTime);
+    } else {
+      console.log("Slow down buster");
+    }
+  };
 
   //Todo List Availablility
   localStorage.getItem("List") != null
     ? null
     : localStorage.setItem("List", JSON.stringify({})); //If theres no list don't get one, if there is get
 
-  const notificationToggle = <>
-    <button
-      className={`notify-button-${notifications}`}
-      onClick={() => {
-        var status = notifications;
-        status = status == "on" ? "off" : "on";
-        localStorage.setItem("notifications", status);
-        setNotification(status);
-        console.log(status);
-      }}
-    >
-      Recieve Notifications
-    </button>
-    <button
-      onClick={() => {
-        notify("Hello");
-      }}
-    >
-      Test Button
-    </button>
-  </>
+  const notificationToggle = (
+    <>
+      <button
+        className={`notify-button-${notifications}`}
+        onClick={() => {
+          var status = notifications;
+          status = status == "on" ? "off" : "on";
+          localStorage.setItem("notifications", status);
+          setNotification(status);
+          console.log(status);
+        }}
+      >
+        Recieve Notifications
+      </button>
+      <button
+        onClick={() => {
+          notify("Hello");
+        }}
+      >
+        Test Button
+      </button>
+    </>
+  );
 
-
+useEffect(() => {
+  fetch('/api/todos')
+    .then(res => {
+      if (!res.ok) throw new Error('Request failed')
+      return res.json()
+    })
+    .then(data => console.log(data))
+    .catch(console.error)
+}, [])
 
   return (
-
     <>
-    <NavBar></NavBar>
-
-    <div className="main-div">
-
-      {/* <div><System></System></div> */}
+      <NavBar></NavBar>
 
 
-      {/* {notificationToggle} */}
+      <div className="main-div">
+        {/* <div><System></System></div> */}
 
-      <QuoteItem quote={quote}/>
-      <Timer className="timer-class" sendNotification={notify} changeQuote={changeQuote} />
-      <Todolist />
+        {/* {notificationToggle} */}
 
-      <button onClick={removeQuotes}> Update Quotes</button>
-      <button onClick={changeQuote}> New Quote</button>
-      <QuoteServiceCredit />
+        <QuoteItem quote={quote} />
+        <Timer
+          className="timer-class"
+          sendNotification={notify}
+          changeQuote={changeQuote}
+        />
+        <Todolist />
 
-    </div>
+        <button onClick={removeQuotes}> Update Quotes</button>
+        <button onClick={changeQuote}> New Quote</button>
+        <QuoteServiceCredit />
+      </div>
     </>
-    
   );
 }
 
