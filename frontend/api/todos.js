@@ -10,7 +10,7 @@ export default async function handler(req, res) {
 
     if (error) throw new error
 
-    res.status(200).json({todo : todoItems, success: true})
+    res.status(200).json({todo : todoItems, SUPABASEACCESSED: true})
   } catch (err) {
     // res.status(500).json({num: 1})
     console.error('DB ERROR:', err)
