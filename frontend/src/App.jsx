@@ -72,20 +72,19 @@ function App() {
     </>
   );
 
-useEffect(() => {
-  fetch('/api/todos')
-    .then(res => {
-      if (!res.ok) throw new Error('Request failed')
-      return res.json()
-    })
-    .then(data => console.log(data))
-    .catch(console.error)
-}, [])
+  useEffect(() => {
+    fetch("/api/todos")
+      .then((res) => res.json()) 
+      .then((data) => console.log(data)) 
+      .catch((err) => console.error(err)) 
+      // res = response
+      // Data returned form the .js call
+      //Self Explainatory
+  }, []);
 
   return (
     <>
       <NavBar></NavBar>
-
 
       <div className="main-div">
         {/* <div><System></System></div> */}
