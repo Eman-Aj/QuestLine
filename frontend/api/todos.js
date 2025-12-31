@@ -1,7 +1,6 @@
 import supabase from "./supabase.js"
 
 
-
 export default async function handler(req, res) {
   try {
     const { data: todoItems, error } = await supabase

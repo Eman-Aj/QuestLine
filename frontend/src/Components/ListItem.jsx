@@ -1,102 +1,79 @@
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 
 export default function Listitem({
   itemKey,
   text,
+  subText,
   status,
   removeItem,
   updateText,
   checkItem,
   reorder,
-  position,
+  renamed
 }) {
-  const [isEditing, setIsEditing] = useState(""); //Item Key
+  const [isEditing, setIsEditing] = useState(false);
   const [itemText, setItemText] = useState(text);
 
-  const inputRef = useRef(null);
-  const focustInput = () => {
-    if (inputRef.current) {
-      inputRef.current.focus();
-    }
-  };
-
-  useEffect(() => {
-    focustInput();
-  }, [isEditing]);
-
   return (
-    <>
-      {/* <>{position}</> */}
+    <div className="todo-item" key={itemKey}>
+      {/* Status */}
+      <button
+        className="todo-item-status"
+        onClick={() => checkItem(itemKey)}
+      >
+        {status ? "●" : "○"}
+      </button>
 
-      <div></div>
-
-      <div className="todo-item" key={itemKey}>
-        {/* This is Check Button */}
-        <button
-          className="check-button item"
-          onClick={() => {
-            checkItem(itemKey);
-          }}
-        >
-          {/* Conditional Formatting for button */}
-          {status ? "●" : "○"}
-        </button>
-
-        <div className="todo-item-text item">
-        {isEditing === itemKey ? (
-          <form
-            onSubmit={(e) => {
-              e.preventDefault();
+      {/* Content */}
+      <div className="todo-item-content">
+        {isEditing ? (
+          <input
+            className="todo-item-input"
+            autoFocus
+            value={itemText}
+            onChange={(e) => setItemText(e.target.value)}
+            onBlur={() => {
               updateText(itemKey, itemText);
-              setIsEditing("");
+              setIsEditing(false);
             }}
-          >
-            <input
-              defaultValue={text}
-              ref={inputRef}
-              onChange={(e) => {
-                setItemText(e.target.value);
-              }}
-            ></input>
-          </form>
+            onKeyDown={(e) => {
+              if (e.key === "Enter") e.target.blur();
+            }}
+          />
         ) : (
           <h3
-            onClick={() => {
-              setIsEditing(itemKey);
-            }}
+            className="todo-item-title"
+            onClick={() => setIsEditing(true)}
           >
             {text}
           </h3>
         )}
-        </div>
-
-        <div className="todo-item-actions item">
-          <button
-            className="todo-item-remove"
-            onClick={() => {
-              removeItem(itemKey);
-            }}
-          >
-            ✘
-          </button>
-          <button
-            className="todo-item-move"
-            onClick={() => {
-              reorder(itemKey, -1);
-            }}
-          >
-            ↑
-          </button>
-          <button
-            className="todo-item-move"
-            onClick={() => {
-              reorder(itemKey, 1);
-            }}
-          >
-            ↓
-          </button>
-        </div>
+        <p>Fancy Text</p>
       </div>
-    </>
+
+      {/* Actions */}
+      <div className="todo-item-actions">
+        <button
+          className="todo-item-remove"
+          onClick={() => removeItem(itemKey)}
+        >
+          ✘
+        </button>
+
+        <button
+          className="todo-item-move"
+          onClick={() => reorder(itemKey, -1)}
+        >
+          ↑
+        </button>
+
+        <button
+          className="todo-item-move"
+          onClick={() => reorder(itemKey, 1)}
+        >
+          ↓
+        </button>
+      </div>
+    </div>
   );
 }

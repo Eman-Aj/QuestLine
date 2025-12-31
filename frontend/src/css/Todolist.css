@@ -1,3 +1,6 @@
+.todo-list-div{
+  width: 100%;
+}
 .todo-list{
     display: flex;
     flex-direction: column;
@@ -8,50 +11,46 @@
 
     background-color: var(--bg1);
     border-radius: var(--margin-s);
+
+    padding-top: 3px;
+    padding-bottom: 3px;
 }
 
 
-.todo-item {
+.todo-create-input {
     
-    display: grid;
-    grid-template-rows: 5rem;
-    grid-template-columns: 5rem 1fr 5rem;
-
-    align-items: center;
-    justify-items: center;
-
-    width: 98%;
-    height: 5rem;
+    height: var(--margin-xxl);
+    width: 30%;
+    
+    padding:3px;
     margin: 3px;
-    /* color: var(--txt1); */
-    background-color: var(--bg2);
-    
-    border-radius: 1rem;
-    /* gap: 10px; */
-}
 
-.todo-item-text {
-    flex-grow: 1;
-}
+    border-radius: .75rem;
+    border-color: var(--bg1);
 
-.todo-item-actions{
-    display: grid;
-    grid-template-rows: 1fr, 1fr;
-    grid-template-columns: 1fr 1fr;
-
+    color: var(--txt1);
+    background-color: var(--bg3);
 
     
-    height: 100%;
-    width: 100%;
+    font-size: var(--margin-l);
+    font-weight: var(--bold);
+
+    transition: width 180ms ease;
     
 }
-/* .todo-item-actions * > {
-    
-    height: 100%;
-    aspect-ratio: 1/1;
-} */
 
-.check-button {
+.todo-create-button {
+
+  align-self: center;
+
+  height: var(--margin-xxl);
+
+  aspect-ratio: 1/1;
+
+  font-size: var(--margin-xl);
+}
+
+.todo-item-status {
 
     margin: 3px;
 
@@ -62,8 +61,54 @@
     background-color: var(--bg3);
 
     font-size: var(--margin-xxl);
+
+    transition: transform 180ms ease;
 }
 
+.todo-item {
+    
+    display: grid;
+    grid-template-rows: auto;
+    grid-template-columns: 4.5rem 1fr 4.5rem;
+
+    align-items: center;
+    justify-items: center;
+
+    width: 98%;
+    /* height: 5rem; */
+    margin: 3px;
+    /* color: var(--txt1); */
+    background-color: var(--bg2);
+    
+    border-radius: 1rem;
+    /* gap: 10px; */
+
+    transition:
+    transform 180ms ease,
+    box-shadow 180ms ease,
+    background-color 180ms ease,
+    grid-template-columns 220ms ease;
+
+}
+
+.todo-item-content{
+    width: 100%;
+    /* background-color: aqua; */
+}
+.todo-item-title {
+    text-wrap: wrap;
+    resize: none;
+}
+
+.todo-item-actions{
+    display: grid;
+    grid-template-rows: 1fr, 1fr;
+    grid-template-columns: 1fr 1fr;
+
+    height: 100%;
+    width: 100%;
+    
+}
 
 .todo-item-remove {
 
@@ -75,23 +120,94 @@
     color: red;
     
 }
-.todo-item-move{
 
+.todo-item-move{
     width: 80%;
     aspect-ratio: 1/1;
-
 }
 
-.todo-input {
+.todo-item-input {
     
-    font-size: 1rem;
-    
-    height: 1.5rem;
-    width: 75%;
+    height: var(--margin-xxl);
+    width: 4.5%;
+    max-width: 100%;
     
     padding:3px;
     margin: 3px;
 
     border-radius: 1rem;
     border: none;
+
+    transition: width 180ms ease;
+    justify-self: center;
+
+    color: var(--txt1);
+    background-color: var(--bg3);
+
+    font-family: var(--mainFont);
+    font-size: var(--margin-m);
+    font-weight: var(--bold);
+
+}
+
+
+/* Interractives------- */
+
+/* Change Cursor */
+.todo-item-move {
+  cursor:n-resize;
+  transition: transform 120ms ease;
+}
+
+.todo-item-move:hover {
+  transform: scale(1.15);
+}
+
+.todo-item-move:active {
+  transform: scale(1.05);
+}
+
+.todo-item-status:active {
+    transform: scale(0.80)
+}
+
+/* Buttons */
+.todo-item-actions > * {
+  display: grid;
+  place-items: center;
+  opacity: 0;
+  transition: transform 150ms ease, opacity 150ms ease;
+}
+
+.todo-item-actions > *:hover {
+  transform: scale(1.15);
+}
+
+/* Directional feel */
+.todo-item-remove:hover {
+  transform: translateX(-4px) scale(1.15);
+}
+
+.todo-item-move:hover {
+  transform: translateX(4px) scale(1.15);
+}
+
+
+/* Hovers/Foxus */
+.todo-item-input:focus {
+   width: 90%;
+}
+
+.todo-create-input:hover, .todo-create-input:focus {
+    width: 50%;
+}
+.todo-item:hover {
+  transform: translateY(-2px) scale(1.01);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+  
+  grid-template-columns: 5.5rem 1fr 6.5rem;
+}
+
+.todo-item:hover .todo-item-actions > * {
+  opacity: 1;
 }

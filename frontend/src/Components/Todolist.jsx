@@ -1,108 +1,58 @@
 import { useEffect, useState, useRef } from "react";
 import "../css/Todolist.css";
+
 import Listitem from "./ListItem";
+import * as Todo from "../Services/Todo";
+
 export default function Todolist({}) {
   
   const [newItemText, setNewItemText] = useState("");
-  const [list, setList] = useState(JSON.parse(localStorage.getItem("List")));
-  
-  
+  const [list, setList] = useState(Todo.getList); //What is problem here?
+
   useEffect(() => {
     const newList = JSON.stringify(list);
-
     //Updates the data (typically this is our create in CRUD)
     localStorage.setItem("List", newList);
   }, [list]);
 
-  const getList = () => {
-    return JSON.parse(localStorage.getItem("List"));
-  };
-
   const createItem = (e) => {
     e.preventDefault();
-
-    const currentList = getList();
-    // const newItem = newItemText;
-    const listSize = Object.keys(currentList).length;
-
-    const newItemId = "" + (listSize + 1);
-    const newItemData = {
-      text: newItemText,
-      status: false,
-      position: listSize + 1,
-    };
-
-    //Set a new item
-    currentList[newItemId] = newItemData;
-
-    //The use effect updates the data
-    setList(currentList);
-
+    //Only handle states and effect changes
+    setList(Todo.createItem(newItemText)); //Returns a new List
     setNewItemText("");
-
-    console.log("Task:", newItemText, '"created"');
   };
 
   const checkItem = (itemKey) => {
-    var currentList = getList();
-    currentList[itemKey].status = !currentList[itemKey].status;
-    setList(currentList);
+    setList(Todo.checkItem(itemKey));
   };
 
   const removeItem = (itemKey) => {
-    var currentList = getList();
-    delete currentList[itemKey];
-    setList(currentList);
+    setList(Todo.removeItem(itemKey));
   };
 
   const updateText = (itemKey, text) => {
-    var currentList = getList();
-    currentList[itemKey].text = text;
-    setList(currentList);
+    setList(Todo.updateText(itemKey, text));
   };
 
   const reorderList = (itemKey, posIncrement) => {
-    //First you update the position numbers
-    var currentList = getList();
-    const oldPos = currentList[itemKey].position
-
-    const listSize = Object.keys(currentList).length;
-
-    if (oldPos + posIncrement < 1) {
-      console.log("Already at topmost");
-      return;
-    } else if(oldPos + posIncrement > listSize){
-      console.log("Already bottom most")
-      return;
-    }
-
-    //Key of the item that we want to move towards
-    const otherKey = Object.entries(list)
-      .find(([,a]) => a.position === oldPos + posIncrement)[0]
-
-    //Before we do this check the length, and check if negative
-    currentList[itemKey].position = oldPos + posIncrement;
-    currentList[otherKey].position = oldPos
-    
-    setList(currentList);
-    console.log(currentList);
-    
+    setList(Todo.reorderList(itemKey, posIncrement));
   };
 
   return (
     <>
+      <div className="todo-list-div">
+        
+      <h2 className="todo-list-title">Quests</h2>
 
-      <h2>Quests</h2>
-
-      <form onSubmit={createItem}>
-        <input className="todo-input"
+      <form className="todo-input" onSubmit={createItem}>
+        <input className="todo-create-input"
           placeholder="Enter Item"
           onChange={(e) => {
             setNewItemText(e.target.value);
           }}
           value={newItemText}
         ></input>
-        <button className="todo-create-button">Create</button>
+        <button className="todo-create-button">+</button>
       </form>
       {/*  ○↑↓● */}
 
@@ -120,6 +70,8 @@ export default function Todolist({}) {
             checkItem={checkItem}
             reorder={reorderList}
             position={value.position}
+            subText={value.subText}
+            renamed={value.renamed}
           />
         ))}
       </div>
@@ -128,7 +80,7 @@ export default function Todolist({}) {
         onClick={() => {
           localStorage.removeItem("List");
           localStorage.setItem("List", JSON.stringify({}));
-          setList(getList);
+          setList(Todo.getList);
         }}
       >
         Clear List
@@ -143,7 +95,9 @@ export default function Todolist({}) {
         Show Entries
       </button>
 
+      <button onClick={Todo.test}>Questify</button>
       
+      </div>
 
     </>
   );

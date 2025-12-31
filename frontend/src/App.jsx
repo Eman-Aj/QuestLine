@@ -72,15 +72,19 @@ function App() {
     </>
   );
 
-  useEffect(() => {
-    fetch("/api/todos")
-      .then((res) => res.json()) 
-      .then((data) => console.log(data)) 
-      .catch((err) => console.error(err)) 
-      // res = response
-      // Data returned form the .js call
-      //Self Explainatory
-  }, []);
+  // useEffect(() => {
+  //   fetch("/api/ask")
+  //     .then((res) => res.json()) //Mandatory
+  //     .then((data) => console.log(data)) //Uses the returned data
+  //     .catch((err) => console.error(err)) 
+  // }, []);
+
+  // useEffect(() => {
+  //   fetch("/api/todos")
+  //     .then((res) => res.json()) 
+  //     .then((data) => console.log(data)) 
+  //     .catch((err) => console.error(err)) 
+  // }, []);
 
   return (
     <>
