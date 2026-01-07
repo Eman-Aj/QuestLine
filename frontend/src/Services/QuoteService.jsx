@@ -52,7 +52,17 @@ export default function QuoteService(){
     const randomQuote = () => {
 
         //Weird random picker
-        const quoteNumber = Math.floor(Math.random() * (50 - 0) + 0);
+        var quoteNumber = parseInt(localStorage.getItem("QuoteNumber"));
+
+        if (quoteNumber === null || quoteNumber >= 49) {
+            getQuotes()
+            quoteNumber = 0 
+            localStorage.setItem("QuoteNumber", 0)
+        } else {
+            quoteNumber += 1
+            localStorage.setItem("QuoteNumber", quoteNumber)
+        }
+        
         const quote = pickQuote(quoteNumber);
 
         return quote;

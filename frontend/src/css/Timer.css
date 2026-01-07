@@ -23,12 +23,12 @@
     margin: 3rem;
 
     border-radius: 10px;
-    box-shadow: 0px 15px 2px -5px rgba(255, 255, 255, 0.28);
+    box-shadow: 0px 15px 2px -5px var(--bg3);
 
     width: 70%;
     height: 16rem;
 
-    background: white;
+    background: var(--bg1);
 
     /* clip-path: polygon(50.14% 0%, 100% 10.48%, 100% 41.82%, 50.14% 50.39%, 0% 41.82%, 0.29% 10.48%); */
 
@@ -41,10 +41,14 @@
 }
 
 .timer-time{
-    background-color: rgb(200, 200, 200);
-    border-radius: 20px;
     top: 3rem;
     width: 80%;
+
+    color: var(--txt1);
+
+    background-color: var(--bg2);
+    border-radius: 20px;
+    
 }
 
 .timer-buttons{
@@ -80,7 +84,7 @@
 
     width: 50%;
 
-    background-color: grey;
+    background-color: var(--bg3);
     border-radius: 10px;
     
     z-index: 2;

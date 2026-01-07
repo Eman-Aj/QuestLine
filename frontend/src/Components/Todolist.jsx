@@ -1,150 +1,159 @@
 import { useEffect, useState, useRef } from "react";
 import "../css/Todolist.css";
-import Listitem from "./ListItem";
-export default function Todolist({}) {
-  
-  const [newItemText, setNewItemText] = useState("");
-  const [list, setList] = useState(JSON.parse(localStorage.getItem("List")));
-  
-  
-  useEffect(() => {
-    const newList = JSON.stringify(list);
 
-    //Updates the data (typically this is our create in CRUD)
+import Listitem from "./ListItem";
+import * as Todo from "../Services/Todo";
+
+export default function Todolist({}) {
+  const [newItemText, setNewItemText] = useState("");
+  const [list, setList] = useState(Todo.getList);
+  const [allowQuestify, setAllowQuestify] = useState(
+    localStorage.getItem("allowQuestify") !== null
+      ? localStorage.getItem("allowQuestify")
+      : true
+  );
+  const timeoutRef = useRef(null);
+
+  //Ensures as we type we aren't going to be interupted
+  useEffect(() => {
+    scheduleQuestify();
+  }, [newItemText]);
+
+  useEffect(() => {
+    scheduleQuestify();
+    const newList = JSON.stringify(list);
+    //Can read local storage to format data base sends
     localStorage.setItem("List", newList);
   }, [list]);
 
-  const getList = () => {
-    return JSON.parse(localStorage.getItem("List"));
-  };
-
   const createItem = (e) => {
     e.preventDefault();
-
-    const currentList = getList();
-    // const newItem = newItemText;
-    const listSize = Object.keys(currentList).length;
-
-    const newItemId = "" + (listSize + 1);
-    const newItemData = {
-      text: newItemText,
-      status: false,
-      position: listSize + 1,
-    };
-
-    //Set a new item
-    currentList[newItemId] = newItemData;
-
-    //The use effect updates the data
-    setList(currentList);
-
+    //Only handle states and effect changes
+    setList(Todo.createItem(newItemText)); //Returns a new List
     setNewItemText("");
-
-    console.log("Task:", newItemText, '"created"');
   };
 
   const checkItem = (itemKey) => {
-    var currentList = getList();
-    currentList[itemKey].status = !currentList[itemKey].status;
-    setList(currentList);
+    setList(Todo.checkItem(itemKey));
   };
 
   const removeItem = (itemKey) => {
-    var currentList = getList();
-    delete currentList[itemKey];
-    setList(currentList);
+    setList(Todo.removeItem(itemKey));
   };
 
   const updateText = (itemKey, text) => {
-    var currentList = getList();
-    currentList[itemKey].text = text;
-    setList(currentList);
+    setList(Todo.updateText(itemKey, text));
   };
 
   const reorderList = (itemKey, posIncrement) => {
-    //First you update the position numbers
-    var currentList = getList();
-    const oldPos = currentList[itemKey].position
+    setList(Todo.reorderList(itemKey, posIncrement));
+  };
 
-    const listSize = Object.keys(currentList).length;
+  //Delay timer for ai to change title names
+  const scheduleQuestify = () => {
+    if (localStorage.getItem("allowQuestify") === "false") return;
+    if (timeoutRef.current) clearTimeout(timeoutRef.current); //Can't use states, causes rerenders
 
-    if (oldPos + posIncrement < 1) {
-      console.log("Already at topmost");
-      return;
-    } else if(oldPos + posIncrement > listSize){
-      console.log("Already bottom most")
-      return;
-    }
+    timeoutRef.current = setTimeout(() => {
+      questify(); //Sends auto ai change - set up "disable" later
+    }, 1000 * 5);
 
-    //Key of the item that we want to move towards
-    const otherKey = Object.entries(list)
-      .find(([,a]) => a.position === oldPos + posIncrement)[0]
+    return () => clearTimeout(timeoutRef.current);
+  };
 
-    //Before we do this check the length, and check if negative
-    currentList[itemKey].position = oldPos + posIncrement;
-    currentList[otherKey].position = oldPos
-    
-    setList(currentList);
-    console.log(currentList);
-    
+  const questify = () => {
+    Todo.questify().then((data) => {
+      //This .then promise is because questify is ASYNC
+      if (data === -1) {
+        console.log("Already Renamed");
+      } else if (data === null) {
+        console.log("Gave Nothing...");
+      } else {
+        console.log(data);
+
+        setList(data);
+      }
+    });
   };
 
   return (
     <>
+      <div className="todo-list-div">
+        <h2 className="todo-list-title">{allowQuestify ? "Quests" : "Todo's"}</h2>
 
-      <h2>Quests</h2>
+        <form className="todo-input create-hover" onSubmit={createItem}>
+          <input
+            className="todo-create-input"
+            placeholder="Enter Item"
+            onChange={(e) => {
+              setNewItemText(e.target.value);
+            }}
+            value={newItemText}
+          ></input>
 
-      <form onSubmit={createItem}>
-        <input className="todo-input"
-          placeholder="Enter Item"
-          onChange={(e) => {
-            setNewItemText(e.target.value);
+          <button
+            className="todo-create-button create-hover"
+            onClick={createItem}
+          >
+            +
+          </button>
+
+          <button
+            className="todo-questify create-hover"
+            onClick={() => {
+              localStorage.setItem("allowQuestify", !allowQuestify);
+              setAllowQuestify(!allowQuestify);
+            }}
+          >
+            AI Quests: {allowQuestify ? "ON" : "OFF"}
+          </button>
+        </form>
+        {/*  ○↑↓● */}
+
+        <div className="todo-list">
+          {Object.entries(list) //Converts into arrays
+            .sort(([, a], [, b]) => a.position - b.position) //Sorts a b things in the arrays cause it's structured like [[key, *value*]]
+            .map(
+              (
+                [key, value] //Maps each one now
+              ) => (
+                <Listitem
+                  itemKey={key}
+                  key={key}
+                  text={value.text}
+                  status={value.status}
+                  updateText={updateText}
+                  removeItem={removeItem}
+                  checkItem={checkItem}
+                  reorder={reorderList}
+                  position={value.position}
+                  subText={value.subText}
+                  renamed={value.renamed}
+                />
+              )
+            )}
+        </div>
+
+        <button
+          className="todo-clear"
+          onClick={() => {
+            localStorage.removeItem("List");
+            localStorage.setItem("List", JSON.stringify({}));
+            setList(Todo.getList);
           }}
-          value={newItemText}
-        ></input>
-        <button className="todo-create-button">Create</button>
-      </form>
-      {/*  ○↑↓● */}
-
-      <div className="todo-list">
-        {Object.entries(list) //Converts into arrays
-        .sort(([,a],[,b]) => a.position - b.position) //Sorts a b things in the arrays cause it's structured like [[key, *value*]]
-        .map(([key, value]) => ( //Maps each one now
-          <Listitem
-            itemKey={key}
-            key={key}
-            text={value.text}
-            status={value.status}
-            updateText={updateText}
-            removeItem={removeItem}
-            checkItem={checkItem}
-            reorder={reorderList}
-            position={value.position}
-          />
-        ))}
+        >
+          Clear List
+        </button>
+{/* 
+        <button
+          onClick={() => {
+            //Do Stuff
+            console.log(Object.entries(list).length);
+          }}
+        >
+          Show Entries
+        </button> */}
       </div>
-
-      <button className="todo-clear"
-        onClick={() => {
-          localStorage.removeItem("List");
-          localStorage.setItem("List", JSON.stringify({}));
-          setList(getList);
-        }}
-      >
-        Clear List
-      </button>
-
-      <button
-        onClick={() => {
-          //Do Stuff
-          console.log(Object.entries(list).length);
-        }}
-      >
-        Show Entries
-      </button>
-
-      
-
     </>
   );
 }

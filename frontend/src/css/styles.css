@@ -19,7 +19,10 @@
     /* Default Theme */
     --bg:var(--grey2);
 
-    font-family: Montserrat, Arial, Helvetica, sans-serif;
+    --mainFont: Montserrat, Arial, Helvetica, sans-serif;
+    --bold: 600;
+    font-family: var(--mainFont);
+
   
     /* Basic stuff */ 
     margin: 0;
@@ -35,6 +38,8 @@
     --margin-s: 0.75rem;
     --margin-xs: 0.5rem;
     --margin-xxs: 0.25rem; 
+
+  
 
 }
 
@@ -72,25 +77,48 @@
 h1 {
     font-size: 5rem;
     color: var(--txt1);
+
 }
 h2 {
     font-size: 2.5rem;
     color: var(--txt1);
+    
 }
 h3 {
     font-size: 1.25rem;
+    color: var(--txt1);
+    
+}
+
+p {
     color: var(--txt2);
 }
+
+h1, h2, h3 , p{
+    
+    transition: color 300ms ease;
+}
+
 
 button {
 
     border-radius: 5px;
     
-    
     border: none;
+
     background-color: var(--bg1);
 
     color: var(--txt1);
+
+    font-family: var(--mainFont);
+
+    
+    transition: color 250ms ease;
+}
+
+div {
+    
+    transition: background-color 250ms ease;
 }
 
 /* Theres a CSS convention for ordering things
