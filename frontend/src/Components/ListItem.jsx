@@ -31,7 +31,7 @@ export default function Listitem({
             className="todo-item-input"
             autoFocus
             value={itemText}
-            onChange={(e) => setItemText(e.target.value)}
+            onChange={(e) => {setItemText(e.target.value);}}
             onBlur={() => {
               updateText(itemKey, itemText);
               setIsEditing(false);
@@ -48,7 +48,7 @@ export default function Listitem({
             {text}
           </h3>
         )}
-        <p>Fancy Text</p>
+        <p className="todo-item-subtitle">{subText}</p>
       </div>
 
       {/* Actions */}

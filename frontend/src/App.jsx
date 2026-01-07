@@ -103,8 +103,8 @@ function App() {
         />
         <Todolist />
 
-        <button onClick={removeQuotes}> Update Quotes</button>
-        <button onClick={changeQuote}> New Quote</button>
+        {/* <button onClick={removeQuotes}> Update Quotes</button>
+        <button onClick={changeQuote}> New Quote</button> */}
         <QuoteServiceCredit />
       </div>
     </>

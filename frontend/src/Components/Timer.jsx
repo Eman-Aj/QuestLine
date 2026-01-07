@@ -1,179 +1,192 @@
-import '../css/Timer.css'
-import { useState, useEffect, useRef } from "react"
+import "../css/Timer.css";
+import { useState, useEffect, useRef } from "react";
 
-function Timer ({sendNotification, changeQuote})
-{
-    const devMode = false
-    const getDate = () => { return (Math.floor(Date.now() / 1000)) /* Displays in seconds*/}
+function Timer({ sendNotification, changeQuote }) {
+  const devMode = false;
+  const getDate = () => {
+    return Math.floor(Date.now() / 1000); /* Displays in seconds*/
+  };
+
+  const defaultTimer = {
+    stageNum: 0,
+    stage: "Focus",
+    endTime: 60 * 25,
+    isRunning: false,
+
+    focusTime: 25 * 60,
+    breakTime: 5 * 60,
+    longBreakTime: 10 * 60,
+    sessions: 3,
+  };
+
+  //Use ref so that we don't have lingering intervals
+  const clockInterval = useRef(null);
+
+  //Self explainatory
+  const formatTime = (time) => {
+    var min = Math.floor(time / 60);
+    var sec = Math.floor(time % 60);
+
+    sec = sec >= 10 ? "" + sec : "0" + sec;
+    // min = min >= 10 ? ""+min:"0"+min
+
+    return min + ":" + sec;
+  };
+
+  const loadTimer = () => {
+    try {
+      const data = JSON.parse(localStorage.getItem("TimerData"));
+      return data ?? defaultTimer;
+    } catch {
+      return defaultTimer;
+    }
+  };
+
+
+  const loadRemaining = () => {
+    try {
+      const data = parseInt(localStorage.getItem("TimeRemaining"));
+      if (data === null) { 
+        return loadTimer().focusTime;
+    }
+      return data ?? loadTimer().focusTime;
+    } catch {
+      return loadTimer().focusTime;
+    }
+  };
+
+  const [timer, setTimer] = useState(loadTimer);
+  const [remaining, setRemaining] = useState(loadRemaining);
+  const [formattedTime, setFormattedTime] = useState(
+    formatTime(remaining)
+  );
+  useEffect(() => {
+    localStorage.setItem("TimerData", JSON.stringify(timer));
+  }, [timer]);
+
+  useEffect(() => {
+    localStorage.setItem("TimeRemaining", remaining);
+  }, [remaining]);
+
+
+  //Controls timer tick
+  useEffect(() => {
+    if (!timer.isRunning || !timer.endTime) return;
+
+        const id = setInterval(() => {
+        const remaining = timer.endTime - getDate();
+        setRemaining(remaining);
+
+        setFormattedTime(formatTime(remaining));
+        document.title = `${formatTime(remaining)} • ${timer.stage}`;
+
+        if (remaining <= 0) advanceStage();
+        }, 1000);
+
+        return () => clearInterval(id);
+    }, [timer.isRunning, timer.endTime]);
+
+  useEffect(() => {
+    if (timer.stage == "Focus") {
+      changeQuote();
+    }
+  }, [timer.stage]);
+
+  // Timer Controls
+  const startClock = (seconds) => {
+    setTimer((t) => ({
+      ...t,
+      isRunning: true,
+      endTime: getDate() + remaining,
+    }));
+  };
+
+  const pauseClock = () => {
+    setTimer((t) => ({
+      ...t,
+      isRunning: false,
+      endTime: null, //loses it's realiability
+    }));
+  };
+
+  const toggleClock = () => {
+    if (timer.isRunning) pauseClock();
+    else {
+      const duration =
+        timer.stage === "Focus"
+          ? timer.focusTime
+          : timer.stage === "Break"
+          ? timer.breakTime
+          : timer.longBreakTime;
+
+      startClock(duration);
+    }
+  };
+  /* Stage logic */
+  const advanceStage = () => {
+    let nextStageNum = timer.stageNum + 1;
+    let stage = "Focus";
+    let duration = timer.focusTime;
+
+    //Odd stages = break, even = focus, 2 * session num - 1 = long break
+    if (nextStageNum >= (2 * timer.sessions - 1)) {
+      stage = "Long Break";
+      duration = timer.longBreakTime;
+      nextStageNum = -1;
+    } else if (nextStageNum % 2 === 1) {
+      stage = "Break";
+      duration = timer.breakTime;
+    }
+
     
-    //Use ref so that we don't have lingering intervals
-    const clockInterval = useRef(null)
-    
-    //Self explainatory
-    const formatTime = (time) => {
+    setFormattedTime(formatTime(duration));
+    sendNotification?.({ stage, time: formatTime(duration) });
 
-        var min = Math.floor(time / 60)
-        var sec = Math.floor(time % 60)
+    setTimer((t) => ({
+      ...t,
+      stageNum: nextStageNum,
+      stage,
+      isRunning: true,
+      endTime: getDate() + duration,
+    }));
+  };
 
-        sec = sec >= 10 ? ""+sec:"0"+sec
-        // min = min >= 10 ? ""+min:"0"+min
+  const playButtonText = timer.isRunning ? "Pause" : "Start";
 
-        return(min + ":" + sec)
-    }
-
-    const [clockText, setClockText] = useState("Start") //Start Pause Button Text
-    const [stageNum, setStageNum] = useState(0) //Stage we're currently on internally
-    const [stage, setStage] = useState("Focus") //Visual rep of stage
-
-    const [breakTime, setBreakTime] = useState((devMode && 5) || 60 * 5)
-    const [focusTime, setFocusTime] = useState((devMode && 5) || 60 * 25)
-    const [longBreakTime, setLongBreakTime] = useState((devMode && 5) || breakTime * 3)
-
-    //ChatGPT helped with this portion - fixed my timing inconsistency
-    const [endTime, setEndTime] = useState(0)
-    const [duration, setDuration] = useState((devMode && 5) || focusTime)
-    const [playing, setPlaying] = useState(false)
-
-    const [formattedTime, setFormattedTime] = useState(formatTime(focusTime))    
-
-    
-    useEffect (() => {
-        if (stage == "Focus") {
-            changeQuote()
-        }
-    }, [stage])
-
-    //Uses the local endTime we send
-    const updateClock = (initEndTime) => {
-
-        const currentTime = getDate()
-        const newTimeLeft = Math.max(initEndTime  - currentTime , 0) //Instead of having old end time which could give an negative just have 0
-        
-        //We can't setEndTime NOW cause it doesn't update syncronously so we have to send it to update clock
-        const formatted = formatTime(newTimeLeft)
-        setFormattedTime(formatted) 
-
-        document.title = `${formatted} • ${stage}` //Changes tabe text
-
-        if (newTimeLeft <= 0) {
-            setStageNum(prev => {
-            const nextStage = prev + 1        
-            changeStage(nextStage) //Now, we use the freshes one automatically when put into the change stage 
-            return nextStage
-            })
-            
-        }
-    }
-
-
-    //Control When the timer starts
-    const startClock = (initDuration) => {
-        
-        setFormattedTime(formatTime(initDuration)) //Get the right time off the bat
-
-        if (clockInterval.current) clearInterval(clockInterval.current)
-        const currentTime = getDate()
-        const newEndTime = currentTime + (initDuration)
-        
-        setEndTime(newEndTime)
-        setDuration(initDuration)
-                        
-        //Weird react formatting for the functino of interval
-        clockInterval.current = setInterval(() => updateClock(newEndTime), 1000) //New start updating the visual
-        setClockText("Pause")
-        setPlaying(true)
-    }
-
-    const stopClock = (e) => {
-
-        if (clockInterval.current) clearInterval(clockInterval.current)
-        
-        const currentTime = getDate()
-        setDuration(endTime - currentTime)    
-
-        setClockText("Resume")
-        setPlaying(false)
-    }
-
-    const toggleClock = (e) => {
-        // if (e) {e.preventDefault()} /Don't misuese e.default - It's for things like forms where their default refresh the page
-        if (playing) {
-            stopClock()
-        } else {
-            startClock(duration)
-        }
-    }
-
-    const changeStage = (customStage, unatural) => {
-        //Even==focus, odd==break, 5*k == Long break
-        var newStage = stageNum + 1
-        var newStageText = "Focus"
-        var initDuration = focusTime
-        // console.log("Now at stage:", newStage)
-
-        stopClock()
-
-        if (Number.isInteger(customStage)) {newStage = customStage}  //Uses local first - Needs the iff or it's an infinite loop
-
-        if ((newStage === 0) || (newStage % 2 === 0)) {
-            // console.log("Focus", newStage)
-            setStage("Focus")
-            newStageText = "Focus"
-            initDuration = focusTime
-            
-        } else if (newStage === 5) {
-            // console.log("Long break", newStage)
-            setStage("Long")
-            newStageText = "Long Break"
-            initDuration = longBreakTime
-            
-            setStageNum(0) //To restart the loop
-        } else {
-            // console.log("Normal break", newStage)
-            setStage("Break")
-            newStageText = "Break"
-            initDuration = breakTime
-        }
-
-        if (!unatural) {
-            sendNotification({"stage": newStageText, "time": formatTime(initDuration)})
-        }
-        
-        startClock(initDuration)
-    }
-
-    return <> 
-    
-    <div className="timer">
-        <h2 className="stage">{stage}</h2>
+  return (
+    <>
+      <div className="timer">
+        <h2 className="stage">{timer.stage}</h2>
         {/* You can have conditional classnames*/}
         {/* !NOTICE we use ` it's not quotes */}
-        
-        <div className= "timer-time" >
-            <h1 className={`timer-${stage}`}>{formattedTime}</h1>
+
+        <div className="timer-time">
+          <h1 className={`timer-${timer.stage}`}>{formattedTime}</h1>
         </div>
-        
+
         <div className="timer-buttons">
-            <button onClick={toggleClock}><h3>{clockText}</h3></button>
+          <button onClick={toggleClock}>
+            <h3>{playButtonText}</h3>
+          </button>
 
-         <button onClick={() => {
-            setStageNum(prev => {
-            const nextStage = prev + 1        
-            changeStage(nextStage, true) 
-            return nextStage
-            })}}><h3>Skip</h3></button>
+          <button onClick={advanceStage}>
+            <h3>Skip</h3>
+          </button>
 
-         {/* Reset Button */}
-         <button onClick={() => {
-            stopClock()
-            console.log(stageNum)
-            changeStage(0, true)
-         }}><h3>Reset</h3></button>
+          {/* Reset Button
+          <button
+            onClick={() => {
+              stopClock();
+              console.log(stageNum);
+              changeStage(0, true);
+            }}
+          >
+            <h3>Reset</h3>
+          </button> */}
         </div>
-    </div>
-    
+      </div>
     </>
+  );
 }
 
-
-export default Timer
+export default Timer;
