@@ -56,7 +56,7 @@ export default function Todolist({}) {
 
     timeoutRef.current = setTimeout(() => {
       questify(); //Sends auto ai change - set up "disable" later
-    }, 1000 * 10);
+    }, 1000 * 5);
 
     return () => clearTimeout(timeoutRef.current);
   };

@@ -138,7 +138,7 @@ function Timer({ sendNotification, changeQuote }) {
       duration = timer.breakTime;
     }
 
-    
+
     setFormattedTime(formatTime(duration));
     sendNotification?.({ stage, time: formatTime(duration) });
 
