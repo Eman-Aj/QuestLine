@@ -46,7 +46,7 @@ function Timer({ sendNotification, changeQuote }) {
   const loadRemaining = () => {
     try {
       const data = parseInt(localStorage.getItem("TimeRemaining"));
-      if (data === null) { 
+      if (data === null || isNaN(data)) { 
         return loadTimer().focusTime;
     }
       return data ?? loadTimer().focusTime;

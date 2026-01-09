@@ -28,8 +28,8 @@ function App() {
   const [notifications, setNotification] = useState(
     localStorage.getItem("notifications")
   );
-  const [quote, setQuote] = useState(randomQuote());
-  const [lastQuote, setLastQuote] = useState(Math.floor(Date.now() / 1000));
+  const [quote, setQuote] = useState({q: "Loading Quotes", a: "Shouldn't Take Long"});
+  const [lastQuote, setLastQuote] = useState(0);
 
   //Quote Overflow
   const changeQuote = () => {
@@ -72,19 +72,6 @@ function App() {
     </>
   );
 
-  // useEffect(() => {
-  //   fetch("/api/ask")
-  //     .then((res) => res.json()) //Mandatory
-  //     .then((data) => console.log(data)) //Uses the returned data
-  //     .catch((err) => console.error(err)) 
-  // }, []);
-
-  // useEffect(() => {
-  //   fetch("/api/todos")
-  //     .then((res) => res.json()) 
-  //     .then((data) => console.log(data)) 
-  //     .catch((err) => console.error(err)) 
-  // }, []);
 
   return (
     <>

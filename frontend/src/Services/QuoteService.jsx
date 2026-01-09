@@ -1,4 +1,3 @@
-
 /* How the Quotes are formatted
 {
 	"q": "Lack of emotion causes lack of progress and lack of motivation.",
@@ -9,82 +8,125 @@
 }
 */
 
-export default function QuoteService(){
-    //Holds API info
-    const quotesApiUrl = "https://api.allorigins.win/raw?url=https://zenquotes.io/api/quotes";
+import { useEffect, useState } from "react";
+import defaultQuotes from "./DefaultQuote";
 
-    const getQuotes = async () => {
-    
-        const response = await fetch(quotesApiUrl);
-        var data = await response.json()
-        console.log(data)
-        localStorage.setItem("Quotes", JSON.stringify(data))
-        console.log("Added New Quotes");
-    
+export default function QuoteService() {
+  // Holds API info
+  const quotesApiUrl =
+    "https://api.allorigins.win/raw?url=https://zenquotes.io/api/quotes";
+
+  const fetchQuotes = async () => {
+    const response = await fetch(quotesApiUrl);
+    const data = await response.json();
+    return data; // array[50]
+  };
+
+  const getQuotes = async () => {
+    const data = await fetchQuotes();
+    console.log("Fetched New Quotes", data);
+    setQuotes(data);
+    setQuoteNumber(0);
+    return data;
+  };
+
+  const loadQuotes = async () => {
+    const stored = localStorage.getItem("Quotes");
+
+    if (stored) {
+      return JSON.parse(stored);
     }
 
-    const checkQuotes = () =>{
-        if (localStorage.getItem("Quotes") === null || localStorage.getItem("Quotes") == {}) {
-            getQuotes()
-        } 
-        else {
-            
-            return true;
-        }
+    console.log("Couldn't find quotes");
+    return await fetchQuotes();
+  };
+
+  // Loads initial persistence
+  const loadQuoteNumber = () => {
+    const n = parseInt(localStorage.getItem("QuoteNumber"));
+    return isNaN(n) ? 0 : n;
+  };
+
+  const [quotes, setQuotes] = useState(
+    { q: "Loading Quotes", a: "Shouldn't Take Long" },
+  );
+  const [quoteNumber, setQuoteNumber] = useState(loadQuoteNumber);
+  const [loaded, setLoaded] = useState(false)
+
+  useEffect(() => {
+    localStorage.setItem("QuoteNumber", quoteNumber);
+  }, [quoteNumber]);
+
+  useEffect(() => {
+    if (Object.keys(quotes).length === 1) return;
+    localStorage.setItem("Quotes", JSON.stringify(quotes));
+  }, [quotes]);
+
+  useEffect(() => {
+    const call = async () => {
+      const data = await loadQuotes();
+      // console.log("Here's the loaded Quotes", data);
+      setLoaded(true)
+      // setQuotes(data);
+    }
+    call();
+  }, []); // Empty array for startup
+
+  useEffect(()=> {
+    if (!loaded) return;
+    const newQuotes = JSON.parse(localStorage.getItem("Quotes"))
+    setQuotes(newQuotes)
+    // console.log("Loaded", newQuotes);
+    setLoaded(false)
+  }, [loaded])
+
+  const localQuotes = () =>{
+    return JSON.parse(localStorage.getItem("Quotes"));
+  }
+
+  const removeQuotes = async () => {
+    localStorage.removeItem("Quotes");
+    console.log("Quotes Removed");
+    await getQuotes();
+  };
+
+
+  //Issue with loading and persisting quote data
+  //For now we will load from Default Quotes saved
+  const randomQuote =  () => {
+    if (!quotes) return defaultQuotes[1];
+    const Lquotes = localQuotes()
+
+
+    // If we've reached the end (0–49)
+    if (quoteNumber >= 49 || quoteNumber === null) {
+      // const newQuotes = await getQuotes();
+      // setQuotes(newQuotes);
+      setQuoteNumber(0)
+      return defaultQuotes[0];
     }
 
-    const removeQuotes = () => {
-        localStorage.removeItem("Quotes")
-        console.log("Quotes Removed");
-        getQuotes()
-        
-    }
+    const nextIndex = quoteNumber + 1;
+    setQuoteNumber(nextIndex);
 
-    const pickQuote = (index) => {
-        checkQuotes();
-        
-        //Just the odd format of accessing the quote value
-        const selectedQuote = Object.entries(JSON.parse(localStorage.getItem("Quotes")))[index][1]
-  
-        return selectedQuote; //Fixx it so i chooses and index
-    }
-
-    const randomQuote = () => {
-
-        //Weird random picker
-        var quoteNumber = parseInt(localStorage.getItem("QuoteNumber"));
-
-        if (quoteNumber === null || quoteNumber >= 49) {
-            getQuotes()
-            quoteNumber = 0 
-            localStorage.setItem("QuoteNumber", 0)
-        } else {
-            quoteNumber += 1
-            localStorage.setItem("QuoteNumber", quoteNumber)
-        }
-        
-        const quote = pickQuote(quoteNumber);
-
-        return quote;
-    }
-
-    // checkQuotes() === true ? console.log("Quotes Already Added") : null; 
-
+    console.log(nextIndex, defaultQuotes[nextIndex]);
     
     
+    return defaultQuotes[nextIndex];
+  };
 
-    
-    return ({removeQuotes, randomQuote})
+  return { removeQuotes, randomQuote };
 }
 
-export function QuoteServiceCredit(){
-    return (<div>
-        Inspirational quotes provided by
-        <div>
-          <a href="https://zenquotes.io/" target="_blank">
-            ZenQuotes API
-          </a>
-        </div>
-      </div>)
+export function QuoteServiceCredit() {
+  return (
+    <div>
+      Inspirational quotes provided by
+      <div>
+        <a href="https://zenquotes.io/" target="_blank">
+          ZenQuotes API
+        </a>
+      </div>
+    </div>
+  );
 }
-

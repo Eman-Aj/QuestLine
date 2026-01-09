@@ -7,18 +7,15 @@
 	"h": "<blockquote>&ldquo;Lack of emotion causes lack of progress and lack of motivation.&rdquo; &mdash; <footer>Tony Robbins</footer></blockquote>"
 }
 */
-import "../css/QuoteItem.css"
+import "../css/QuoteItem.css";
 
-export default function QuoteItem({
-    quote
-}) {
-
-
-    return(<>
-        <div className="quote-divison"> 
-            <h3 className="quote">"{quote.q}" </h3>
-            <h4 className="quote-author">- {quote.a}</h4>
-            
-            </div>   
-        </>)
+export default function QuoteItem({ quote }) {
+  return (
+    <>
+      <div className="quote-divison">
+        <h3 className="quote">"{quote.q}" </h3>
+        <h4 className="quote-author">- {quote.a}</h4>
+      </div>
+    </>
+  );
 }
