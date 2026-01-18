@@ -3,6 +3,8 @@ import "../css/styles.css";
 
 import { useEffect, useRef, useState } from "react";
 
+import { Link } from "react-router-dom";
+
 export default function NavBar({}) {
   const themes = ["light", "mid", "dark"]
   var themeNum = 0
@@ -31,19 +33,19 @@ export default function NavBar({}) {
 
   return (
     <>
-      <div className="nav">
+      <nav className="nav">
         <ul className="nav-items">
           <li>
-            <a href="/hero" className="nav-link">Hero</a>
+            <Link to="/hero" className="nav-link">Hero</Link>
           </li>
           <li>
-            <a href="/quests" className="nav-link">Quests</a>
+            <Link to="/" className="nav-link">Quests</Link>
           </li>
           <li>
-            <a href="/settings" className="nav-link">Settings</a>
+            <Link to="/settings" className="nav-link">Settings</Link>
           </li>
           <li>
-            <a href="/stats" className="nav-link">Stats</a>
+            <Link to="/stats" className="nav-link">Stats</Link>
           </li>
           <button className="nav-link theme" onClick={changeTheme}> Change Theme</button>
         </ul>
@@ -51,7 +53,7 @@ export default function NavBar({}) {
         <div className="nav-wrap">
           <div className="nav-curve"></div>
         </div>
-      </div>
+      </nav>
     </>
   );
 }

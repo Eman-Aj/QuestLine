@@ -56,7 +56,7 @@ export function updateText(itemKey, text) {
   var currentList = getList();
   currentList[itemKey].text = text;
   currentList[itemKey].subText = "";
-  currentList[itemKey].renamed = false
+  // currentList[itemKey].renamed = true
   return currentList;
 }
 

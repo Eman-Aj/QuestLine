@@ -12,7 +12,10 @@ export default function Todolist({}) {
       ? localStorage.getItem("allowQuestify")
       : true
   );
+  const [questifyStatus, setQuestifyStatus] = useState("Qhas");
+  
   const timeoutRef = useRef(null);
+  const questifyTime = 5;
 
   //Ensures as we type we aren't going to be interupted
   useEffect(() => {
@@ -54,9 +57,10 @@ export default function Todolist({}) {
     if (localStorage.getItem("allowQuestify") === "false") return;
     if (timeoutRef.current) clearTimeout(timeoutRef.current); //Can't use states, causes rerenders
 
+    setQuestifyStatus("Generating Quests...")
     timeoutRef.current = setTimeout(() => {
       questify(); //Sends auto ai change - set up "disable" later
-    }, 1000 * 5);
+    }, 1000 * questifyTime);
 
     return () => clearTimeout(timeoutRef.current);
   };
@@ -73,6 +77,8 @@ export default function Todolist({}) {
 
         setList(data);
       }
+      
+      setQuestifyStatus("")
     });
   };
 
@@ -109,7 +115,7 @@ export default function Todolist({}) {
           </button>
         </form>
         {/*  ○↑↓● */}
-
+        <p>{questifyStatus}</p>
         <div className="todo-list">
           {Object.entries(list) //Converts into arrays
             .sort(([, a], [, b]) => a.position - b.position) //Sorts a b things in the arrays cause it's structured like [[key, *value*]]

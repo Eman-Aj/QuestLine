@@ -34,6 +34,8 @@
   background-color: var(--bg2);
   border-radius: 10px;
 
+  padding-bottom: 4.6rem;
+
   
 }
 
@@ -45,16 +47,21 @@
 }
 
 
-html {
-  background: linear-gradient(180deg, #020617, #172547);
-
+html, body {
+  height:100%;
   /* background-image: url(../assets/Background.png); */
-  background-size: cover;
-  
-  background-position: center;
+
+  margin: 0;
+  padding: 0;
   
 }
 
+body {
+  background: linear-gradient(180deg, #020617, #172547);
+  background-attachment: fixed;
+  background-size:contain;
+  background-position: center;
+}
 
 /*
 .logo {

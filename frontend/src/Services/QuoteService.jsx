@@ -120,7 +120,7 @@ export default function QuoteService() {
 
 export function QuoteServiceCredit() {
   return (
-    <div>
+    <div className="quote-credit">
       Inspirational quotes provided by
       <div>
         <a href="https://zenquotes.io/" target="_blank">

@@ -45,6 +45,7 @@
     z-index: 2;
     position: absolute;
     top: 2rem;
+    left: 1.5rem;
 
     display: flex;
     align-items: center;
@@ -53,9 +54,11 @@
 
     list-style: none;
 
-    width: 100%;
+    width: 90%;
 
     color: rgb(255, 255, 255);
+
+    
 
 }
 
